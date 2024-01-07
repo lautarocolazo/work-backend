@@ -9,4 +9,7 @@ app_name = 'user'
 
 urlpatterns = [
     path('create/', views.CreateUserView.as_view(), name='create'),
+    path('get/', views.GetUserView.as_view(), name='get'),
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login, name='login'),
 ]
