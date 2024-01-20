@@ -25,6 +25,7 @@ class CreateUserView(generics.CreateAPIView):
 # @permission_classes([IsAuthenticated])
 class GetUserView(generics.RetrieveAPIView):
     """Retrieve the current user."""
+
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
@@ -32,10 +33,10 @@ class GetUserView(generics.RetrieveAPIView):
         return self.request.user
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def login(request):
-    user = get_object_or_404(get_user_model(), email=request.data['email'])
-    if not user.check_password(request.data['password']):
+    user = get_object_or_404(get_user_model(), email=request.data["email"])
+    if not user.check_password(request.data["password"]):
         return Response({"detail": "Not found."}, status.HTTP_400_BAD_REQUEST)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
@@ -43,13 +44,13 @@ def login(request):
     return Response({"token": token.key, "user": serializer.data})
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        user = get_user_model().objects.get(email=request.data['email'])
-        user.set_password(request.data['password'])
+        user = get_user_model().objects.get(email=request.data["email"])
+        user.set_password(request.data["password"])
         user.save()
         token = Token.objects.create(user=user)
 
@@ -58,6 +59,6 @@ def signup(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def test_token(request):
     return Response({})
